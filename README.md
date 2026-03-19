@@ -1,2 +1,2 @@
 # Notes
-Some notes about AI.
+Notes I took while studying
