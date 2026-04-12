@@ -449,7 +449,7 @@ $$\tilde{u}_t(x \mid y) = u_t^{\text{target}}(x) + w a_t \nabla \log p_t(y \mid 
 
 $$\tilde{u}_t(x \mid y) = u_t^{\text{target}}(x) + w a_t \left(\nabla \log p_t(x \mid y) - \nabla \log p_t(x)\right)$$
 
-利用命题 1 将 score 换回向量场：
+利用[(41)](#^eq-41),[(42)](#^eq-42)将 score 换回向量场：
 $$\boxed{\tilde{u}_t(x \mid y) = (1-w) u_t^{\text{target}}(x \mid \varnothing) + w u_t^{\text{target}}(x \mid y)} \tag{65} $$ ^eq-65
 
 其中 $u_t^{\text{target}}(x \mid \varnothing)$ 表示无条件（unconditional）向量场。$\varnothing$ 表示“空标签”。
