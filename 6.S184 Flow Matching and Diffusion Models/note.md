@@ -436,7 +436,7 @@ $$\mathcal{L}_{\text{CFM}}^{\text{guided}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\
 $$p_t(x \mid y) = \frac{p_t(x) p_t(y \mid x)}{p_t(y)}$$
 $$\nabla \log p_t(x \mid y) = \nabla \log p_t(x) + \nabla \log p_t(y \mid x) \tag{61} $$ ^eq-61
 
-将 [(61)](#^eq-61) 代入条件向量场（类比 [(41)](#^eq-41)），可得 guided 向量场：
+将 [(61)](#^eq-61) 代入条件向量场（类比 [(41)](#^eq-41),[(42)](#^eq-42)），可得 guided 向量场：
 
 $$u_t^{\text{target}}(x \mid y) = u_t^{\text{target}}(x) + a_t \nabla \log p_t(y \mid x) \tag{59} $$ ^eq-59
 
