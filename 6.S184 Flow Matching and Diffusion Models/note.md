@@ -1,17 +1,4 @@
-# 6.S184 Flow Matching and Diffusion Models — 公式、算法与推导笔记
-
-## 目录
-
-1. [引言：生成建模即采样](#1-引言生成建模即采样)
-2. [Flow 与 Diffusion 模型](#2-flow-与-diffusion-模型)
-3. [Flow Matching](#3-flow-matching)
-4. [Score Functions 与 Score Matching](#4-score-functions-与-score-matching)
-5. [Guidance：如何基于 Prompt 条件生成](#5-guidance如何基于-prompt-条件生成)
-6. [大规模图像/视频生成器架构](#6-大规模图像视频生成器架构)
-7. [离散扩散模型（CTMC / 语言模型）](#7-离散扩散模型ctmc--语言模型)
-8. [算法汇总](#8-算法汇总)
-
----
+# 6.S184 Flow Matching and Diffusion Models — 笔记
 
 ## 1. 引言：生成建模即采样
 
@@ -594,6 +581,8 @@ $$\mathcal{L}_{\text{Recon}}(\phi, \theta) = \mathbb{E}_{x \sim p_{\text{data}}}
 
 VAE 将 encoder 和 decoder 从确定性函数放松为概率分布：
 $$q_\phi(z \mid x) = \mathcal{N}\left(z; \mu_\phi(x), \text{diag}(\sigma_\phi^2(x))\right), \quad p_\theta(x \mid z) = \mathcal{N}\left(x; \mu_\theta(z), \sigma_\theta^2(z) I_d\right) \tag{71} $$ ^eq-71
+- **Encoder**：$\text{diag}(\sigma_\phi^2(x))$，每个维度有 **独立的方差**
+- **Decoder**：$\sigma_\theta^2(z)I_d$，所有维度共享 **同一个标量方差**
 
 **VAE 重构损失**
 
@@ -766,8 +755,6 @@ $$\mathcal{L}_{\text{DFM}}(\theta) = \mathbb{E}_{z, t, x \sim p_t(\cdot \mid z)}
 
 ## 8. 算法汇总
 
-以下将 `lecture_notes.md` 中出现的全部 8 个核心算法用数学步骤形式整理，便于在 LaTeX 或 markdown 中直接引用公式。
-
 ### Algorithm 1：Flow Model 采样（Euler 方法）
 
 **输入**：神经网络向量场 $u_t^\theta$，步数 $n$。  
@@ -781,7 +768,7 @@ $$\mathcal{L}_{\text{DFM}}(\theta) = \mathbb{E}_{z, t, x \sim p_t(\cdot \mid z)}
 5. **end for**
 6. **return** $X_1$。
 
-> **说明**：这是最简单的 ODE 数值积分，每一步沿当前向量场方向走一个固定步长。
+> **说明**：这是最简单的 ODE 数值积分，每一步沿当前向量场方向走一个固定步长对应 [(4)](#^eq-4)。
 
 ---
 
@@ -800,7 +787,7 @@ $$\mathcal{L}_{\text{DFM}}(\theta) = \mathbb{E}_{z, t, x \sim p_t(\cdot \mid z)}
 4. **end for**
 5. **return** $X_1$。
 
-> **说明**：在 Euler 步的基础上注入方差为 $h\sigma_t^2$ 的高斯噪声，对应 SDE 的离散化。
+> **说明**：在 Euler 步的基础上注入方差为 $h\sigma_t^2$ 的高斯噪声，对应 SDE 的离散化见 [(9)](#^eq-9)。其中 drift 项可用 score 表示为 [(46)](#^eq-46)。
 
 ---
 
@@ -819,7 +806,7 @@ $$\mathcal{L}_{\text{DFM}}(\theta) = \mathbb{E}_{z, t, x \sim p_t(\cdot \mid z)}
    $$\mathcal{L}(\theta) = \big\| u_t^\theta(x) - (z - \epsilon) \big\|^2$$
 6. 梯度更新 $\theta$。
 
-> **说明**：CondOT 路径下 $\alpha_t = t$，$\beta_t = 1 - t$，条件向量场恰好是 $z - \epsilon$。该算法实现了 simulation-free training。
+> **说明**：CondOT 路径下 $\alpha_t = t$，$\beta_t = 1 - t$，条件向量场恰好是 $z - \epsilon$。该算法实现了 simulation-free training目标向量场为 CondOT 下的 [(20)](#^eq-20)，损失等价于 [(26)](#^eq-26) 的简化形式。
 
 ---
 
@@ -841,7 +828,7 @@ $$\mathcal{L}_{\text{DFM}}(\theta) = \mathbb{E}_{z, t, x \sim p_t(\cdot \mid z)}
      $$\mathcal{L}(\theta) = \big\| \epsilon_t^\theta(x_t) - \epsilon \big\|^2$$
 6. 梯度更新 $\theta$。
 
-> **说明**：noise predictor 形式在 $\beta_t \to 0$ 时更数值稳定，是 DDPM 的经典实现。
+> **说明**：noise predictor 形式在 $\beta_t \to 0$ 时更数值稳定，是 DDPM 的经典实现score 形式直接基于 [(40)](#^eq-40)。
 
 ---
 
@@ -864,7 +851,7 @@ $$\mathcal{L}_{\text{DFM}}(\theta) = \mathbb{E}_{z, t, x \sim p_t(\cdot \mid z)}
 **推理时**：使用 guidance scale $w \ge 1$ 对条件与无条件输出做外推：
 $$\tilde{u}_t(x \mid y) = (1 - w) \, u_t^\theta(x \mid \varnothing) + w \, u_t^\theta(x \mid y)$$
 
-> **说明**：训练时随机丢弃标签使网络同时学会无条件与有条件生成；推理时通过 $w > 1$ 显著增强 prompt adherence。
+> **说明**：训练时随机丢弃标签使网络同时学会无条件与有条件生成；推理时通过 $w > 1$ 显著增强 prompt adherence训练损失为 [(58)](#^eq-58)；推理公式为 [(65)](#^eq-65)。
 
 ---
 
@@ -888,7 +875,7 @@ $$\tilde{u}_t(x \mid y) = (1 - w) \, u_t^\theta(x \mid \varnothing) + w \, u_t^\
 7. 总损失与梯度更新：
    $$\mathcal{L} \leftarrow \mathcal{L}_{\text{recon}} + \beta \, \mathcal{L}_{\text{KL}}, \qquad (\phi, \theta) \leftarrow \text{grad\_update}(\mathcal{L})$$
 
-> **说明**：$\beta$ 控制隐空间正则化的强度；$\beta = 1$ 即为标准 VAE，$\beta \ll 1$ 常见于 latent diffusion 的预训练 autoencoder。
+> **说明**：$\beta$ 控制隐空间正则化的强度；$\beta = 1$ 即为标准 VAE，$\beta \ll 1$ 常见于 latent diffusion 的预训练 autoencoder对应 [(80)](#^eq-80)–[(83)](#^eq-83)。
 
 ---
 
@@ -914,7 +901,7 @@ $$\tilde{u}_t(x \mid y) = (1 - w) \, u_t^\theta(x \mid \varnothing) + w \, u_t^\
 4. **end for**
 5. **return** $X_1$。
 
-> **说明**：factorized 假设保证每一步只改变一个位置，从而使转移概率从指数级 $|\mathcal{V}|^d$ 降到线性级 $d \times |\mathcal{V}|$。
+> **说明**：factorized 假设保证每一步只改变一个位置，从而使转移概率从指数级 $|\mathcal{V}|^d$ 降到线性级 $d \times |\mathcal{V}|$转移概率离散化见 [(88)](#^eq-88)，rate 聚合公式为 [(90)](#^eq-90)。
 
 ---
 
@@ -940,5 +927,5 @@ $$\tilde{u}_t(x \mid y) = (1 - w) \, u_t^\theta(x \mid \varnothing) + w \, u_t^\
    $$\mathcal{L}_{\text{DFM}}(\theta) \leftarrow \sum_{j=1}^d \Big[ -\log p_{1|t}^\theta(z_j \mid x)_j \Big]$$
 6. 梯度更新 $\theta$。
 
-> **说明**：该损失等价于在每个位置训练一个分类器，目标是根据当前含噪/含 mask 的序列 $x$ 预测原始干净 token $z_j$。LLaDA 等离散扩散语言模型即采用此范式。
+> **说明**：该损失等价于在每个位置训练一个分类器，目标是根据当前含噪/含 mask 的序列 $x$ 预测原始干净 token $z_j$。LLaDA 等离散扩散语言模型即采用此范式rate 构造见 [(95)](#^eq-95)。
 
