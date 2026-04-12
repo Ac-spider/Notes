@@ -31,10 +31,8 @@
 ### 2.1 Flow Models（基于 ODE）
 
 #### ODE 定义
-
-$$\frac{\mathrm{d}}{\mathrm{d}t} X_t = u_t(X_t) \quad \text{(ODE)} \tag{1a}$$
-
-$$X_0 = x_0 \quad \text{(initial condition)} \tag{1b}$$
+$$\frac{\mathrm{d}}{\mathrm{d}t} X_t = u_t(X_t) \quad \text{(ODE)} \tag{1a} $$ ^eq-1a
+$$X_0 = x_0 \quad \text{(initial condition)} \tag{1b} $$ ^eq-1b
 
 - $X: [0,1] \to \mathbb{R}^d$：轨迹（trajectory）
 - $u: \mathbb{R}^d \times [0,1] \to \mathbb{R}^d$：向量场（vector field），$u_t(x)$ 表示在时刻 $t$、位置 $x$ 处的速度方向
@@ -42,26 +40,22 @@ $$X_0 = x_0 \quad \text{(initial condition)} \tag{1b}$$
 #### Flow（流）的定义
 
 流 $\psi_t(x_0)$ 回答：从 $x_0$ 出发，按向量场 $u_t$ 演化，时刻 $t$ 会到达哪里？
-
-$$\psi: \mathbb{R}^d \times [0,1] \to \mathbb{R}^d, \quad (x_0, t) \mapsto \psi_t(x_0) \tag{2a}$$
-
-$$\frac{\mathrm{d}}{\mathrm{d}t} \psi_t(x_0) = u_t(\psi_t(x_0)) \tag{2b}$$
-
-$$\psi_0(x_0) = x_0 \tag{2c}$$
+$$\psi: \mathbb{R}^d \times [0,1] \to \mathbb{R}^d, \quad (x_0, t) \mapsto \psi_t(x_0) \tag{2a} $$ ^eq-2a
+$$\frac{\mathrm{d}}{\mathrm{d}t} \psi_t(x_0) = u_t(\psi_t(x_0)) \tag{2b} $$ ^eq-2b
+$$\psi_0(x_0) = x_0 \tag{2c} $$ ^eq-2c
 
 对给定初值 $X_0 = x_0$，有 $X_t = \psi_t(X_0)$。
 
 #### 定理 3：Flow 存在唯一性
 
-若 $u: \mathbb{R}^d \times [0,1] \to \mathbb{R}^d$ **连续可微且导数有界**，则 ODE (2) 存在唯一解流 $\psi_t$，且对每个 $t$，$\psi_t$ 是**微分同胚**（diffeomorphism，即连续可微且逆也连续可微）。
+若 $u: \mathbb{R}^d \times [0,1] \to \mathbb{R}^d$ **连续可微且导数有界**，则 ODE [(2a)](#^eq-2a) 存在唯一解流 $\psi_t$，且对每个 $t$，$\psi_t$ 是**微分同胚**（diffeomorphism，即连续可微且逆也连续可微）。
 
 > **直观**：在深度学习里，神经网络参数化 $u_t^\theta(x)$ 天然满足这些条件，因此 Flow 总是存在且唯一的。
 
 #### 例子 4：线性向量场
 
 设 $u_t(x) = -\theta x$（$\theta > 0$），则
-
-$$\psi_t(x_0) = \exp(-\theta t) x_0 \tag{3}$$
+$$\psi_t(x_0) = \exp(-\theta t) x_0 \tag{3} $$ ^eq-3
 
 **推导验证**：
 - 初始条件：$\psi_0(x_0) = e^0 x_0 = x_0$ ✓
@@ -70,8 +64,7 @@ $$\psi_t(x_0) = \exp(-\theta t) x_0 \tag{3}$$
 > **直观**：所有粒子向原点指数衰减，$\sigma=0$ 时是确定性 Flow。
 
 #### Euler 数值模拟方法
-
-$$X_{t+h} = X_t + h u_t(X_t), \quad h = \frac{1}{n} \tag{4}$$
+$$X_{t+h} = X_t + h u_t(X_t), \quad h = \frac{1}{n} \tag{4} $$ ^eq-4
 
 #### Heun 方法（二阶）
 
@@ -104,8 +97,7 @@ $W = (W_t)_{0 \le t \le 1}$ 满足：
 - **Independent increments**：不重叠区间上的增量相互独立
 
 数值模拟（步长 $h$）：
-
-$$W_{t+h} = W_t + \sqrt{h} \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0, I_d) \tag{5}$$
+$$W_{t+h} = W_t + \sqrt{h} \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0, I_d) \tag{5} $$ ^eq-5
 
 > **直观**：把布朗运动想象成“连续时间的随机游走”，每一步增加一个方差为 $h$ 的高斯噪声。
 
@@ -116,18 +108,14 @@ ODE 的导数形式：
 $$\frac{1}{h}(X_{t+h} - X_t) = u_t(X_t) + R_t(h) \quad \Rightarrow \quad X_{t+h} = X_t + h u_t(X_t) + h R_t(h)$$
 
 加入随机项后得到 SDE：
-
-$$X_{t+h} = X_t + \underbrace{h u_t(X_t)}_{\text{确定性}} + \underbrace{\sigma_t (W_{t+h} - W_t)}_{\text{随机性}} + \underbrace{h R_t(h)}_{\text{误差项}} \tag{6}$$
+$$X_{t+h} = X_t + \underbrace{h u_t(X_t)}_{\text{确定性}} + \underbrace{\sigma_t (W_{t+h} - W_t)}_{\text{随机性}} + \underbrace{h R_t(h)}_{\text{误差项}} \tag{6} $$ ^eq-6
 
 符号记法（**非严格意义**，仅为方便）：
-
-$$\mathrm{d}X_t = u_t(X_t)\,\mathrm{d}t + \sigma_t\,\mathrm{d}W_t \quad \text{(SDE)} \tag{7a}$$
-
-$$X_0 = x_0 \tag{7b}$$
+$$\mathrm{d}X_t = u_t(X_t)\,\mathrm{d}t + \sigma_t\,\mathrm{d}W_t \quad \text{(SDE)} \tag{7a} $$ ^eq-7a
+$$X_0 = x_0 \tag{7b} $$ ^eq-7b
 
 #### 例子 6：Ornstein-Uhlenbeck (OU) 过程
-
-$$\mathrm{d}X_t = -\theta X_t \,\mathrm{d}t + \sigma\,\mathrm{d}W_t \tag{8}$$
+$$\mathrm{d}X_t = -\theta X_t \,\mathrm{d}t + \sigma\,\mathrm{d}W_t \tag{8} $$ ^eq-8
 
 - 漂移项 $-\theta X_t$：始终指向原点，把粒子拉回中心
 - 扩散项 $\sigma\,\mathrm{d}W_t$：不断注入高斯噪声
@@ -137,12 +125,11 @@ $$\mathrm{d}X_t = -\theta X_t \,\mathrm{d}t + \sigma\,\mathrm{d}W_t \tag{8}$$
 > **使用场景**：OU 过程是扩散模型早期的基础（如 DDPM 的前向加噪过程可视为离散化的 OU 过程）。
 
 #### Euler-Maruyama 模拟方法
-
-$$X_{t+h} = X_t + h u_t(X_t) + \sqrt{h}\,\sigma_t \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0, I_d) \tag{9}$$
+$$X_{t+h} = X_t + h u_t(X_t) + \sqrt{h}\,\sigma_t \epsilon_t, \quad \epsilon_t \sim \mathcal{N}(0, I_d) \tag{9} $$ ^eq-9
 
 #### 定理 5：SDE 解的存在唯一性
 
-若 $u$ 连续可微且导数有界，$\sigma_t$ 连续，则 SDE (7) 存在唯一随机过程解 $(X_t)_{0 \le t \le 1}$。
+若 $u$ 连续可微且导数有界，$\sigma_t$ 连续，则 SDE [(7a)](#^eq-7a) 存在唯一随机过程解 $(X_t)_{0 \le t \le 1}$。
 
 ---
 
@@ -153,16 +140,13 @@ $$X_{t+h} = X_t + h u_t(X_t) + \sqrt{h}\,\sigma_t \epsilon_t, \quad \epsilon_t \
 #### 条件概率路径
 
 对每个数据点 $z$，定义条件概率路径 $p_t(x \mid z)$，满足：
-
-$$p_0(\cdot \mid z) = p_{\text{init}}, \quad p_1(\cdot \mid z) = \delta_z \tag{11}$$
+$$p_0(\cdot \mid z) = p_{\text{init}}, \quad p_1(\cdot \mid z) = \delta_z \tag{11} $$ ^eq-11
 
 #### 边缘概率路径
-
-$$p_t(x) = \int p_t(x \mid z) p_{\text{data}}(z)\,\mathrm{d}z \tag{12}$$
+$$p_t(x) = \int p_t(x \mid z) p_{\text{data}}(z)\,\mathrm{d}z \tag{12} $$ ^eq-12
 
 满足：
-
-$$p_0 = p_{\text{init}}, \quad p_1 = p_{\text{data}} \tag{14}$$
+$$p_0 = p_{\text{init}}, \quad p_1 = p_{\text{data}} \tag{14} $$ ^eq-14
 
 #### 例子 8：Gaussian 条件概率路径（最重要！）
 
@@ -171,16 +155,14 @@ $$p_0 = p_{\text{init}}, \quad p_1 = p_{\text{data}} \tag{14}$$
 - $\alpha_0 = \beta_1 = 0$，$\alpha_1 = \beta_0 = 1$
 
 则定义：
-
-$$p_t(\cdot \mid z) = \mathcal{N}\left(\alpha_t z, \; \beta_t^2 I_d\right) \tag{15}$$
+$$p_t(\cdot \mid z) = \mathcal{N}\left(\alpha_t z, \; \beta_t^2 I_d\right) \tag{15} $$ ^eq-15
 
 验证边界：
 - $t=0$：$p_0(\cdot \mid z) = \mathcal{N}(0, I_d) = p_{\text{init}}$
 - $t=1$：$p_1(\cdot \mid z) = \mathcal{N}(z, 0) = \delta_z$
 
 采样方式：
-
-$$x = \alpha_t z + \beta_t \epsilon, \quad z \sim p_{\text{data}},\; \epsilon \sim \mathcal{N}(0, I_d) \quad \Rightarrow \quad x \sim p_t \tag{16}$$
+$$x = \alpha_t z + \beta_t \epsilon, \quad z \sim p_{\text{data}},\; \epsilon \sim \mathcal{N}(0, I_d) \quad \Rightarrow \quad x \sim p_t \tag{16} $$ ^eq-16
 
 > **直观**：$\alpha_t$ 控制数据成分的权重，$\beta_t$ 控制噪声成分的权重。$t$ 越小，噪声越多；$t=1$ 时只有纯净数据。
 
@@ -191,18 +173,15 @@ $$x = \alpha_t z + \beta_t \epsilon, \quad z \sim p_{\text{data}},\; \epsilon \s
 #### 条件向量场
 
 对每个 $z$，寻找条件向量场 $u_t^{\text{target}}(x \mid z)$，使其 ODE 轨迹满足：
-
-$$X_0 \sim p_{\text{init}}, \quad \frac{\mathrm{d}}{\mathrm{d}t}X_t = u_t^{\text{target}}(X_t \mid z) \quad \Rightarrow \quad X_t \sim p_t(\cdot \mid z) \tag{17}$$
+$$X_0 \sim p_{\text{init}}, \quad \frac{\mathrm{d}}{\mathrm{d}t}X_t = u_t^{\text{target}}(X_t \mid z) \quad \Rightarrow \quad X_t \sim p_t(\cdot \mid z) \tag{17} $$ ^eq-17
 
 #### 定理 9：边缘化技巧（Marginalization Trick）
 
 若 $u_t^{\text{target}}(x \mid z)$ 是条件向量场，则下式定义的边缘向量场能跟随边缘概率路径：
-
-$$u_t^{\text{target}}(x) = \int u_t^{\text{target}}(x \mid z) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z \tag{18}$$
+$$u_t^{\text{target}}(x) = \int u_t^{\text{target}}(x \mid z) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z \tag{18} $$ ^eq-18
 
 从而：
-
-$$X_0 \sim p_{\text{init}}, \quad \frac{\mathrm{d}}{\mathrm{d}t}X_t = u_t^{\text{target}}(X_t) \quad \Rightarrow \quad X_t \sim p_t \quad (0 \le t \le 1) \tag{19}$$
+$$X_0 \sim p_{\text{init}}, \quad \frac{\mathrm{d}}{\mathrm{d}t}X_t = u_t^{\text{target}}(X_t) \quad \Rightarrow \quad X_t \sim p_t \quad (0 \le t \le 1) \tag{19} $$ ^eq-19
 
 特别地，$X_1 \sim p_{\text{data}}$，即边缘向量场“将噪声转化为数据”。
 
@@ -211,8 +190,7 @@ $$X_0 \sim p_{\text{init}}, \quad \frac{\mathrm{d}}{\mathrm{d}t}X_t = u_t^{\text
 #### 例子 10：Gaussian 概率路径的条件向量场
 
 对 $p_t(\cdot \mid z) = \mathcal{N}(\alpha_t z, \beta_t^2 I_d)$，条件向量场为：
-
-$$u_t^{\text{target}}(x \mid z) = \left(\dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_t}\alpha_t\right) z + \frac{\dot{\beta}_t}{\beta_t} x \tag{20}$$
+$$u_t^{\text{target}}(x \mid z) = \left(\dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_t}\alpha_t\right) z + \frac{\dot{\beta}_t}{\beta_t} x \tag{20} $$ ^eq-20
 
 **推导**：
 
@@ -231,12 +209,10 @@ $$u_t^{\text{target}}(x' \mid z) = \dot{\alpha}_t z + \dot{\beta}_t \frac{x' - \
 #### 定理 11：连续性方程（Continuity Equation）
 
 对向量场 $u_t^{\text{target}}$ 与概率路径 $p_t$，有 $X_t \sim p_t$ 当且仅当：
-
-$$\partial_t p_t(x) = -\operatorname{div}\left(p_t u_t^{\text{target}}\right)(x) \tag{23}$$
+$$\partial_t p_t(x) = -\operatorname{div}\left(p_t u_t^{\text{target}}\right)(x) \tag{23} $$ ^eq-23
 
 其中散度定义为：
-
-$$\operatorname{div}(v_t)(x) = \sum_{i=1}^d \frac{\partial}{\partial x_i} v_t^i(x) \tag{22}$$
+$$\operatorname{div}(v_t)(x) = \sum_{i=1}^d \frac{\partial}{\partial x_i} v_t^i(x) \tag{22} $$ ^eq-22
 
 > **直观**：$\partial_t p_t$ 是概率密度的变化率，它等于概率质量净流入率的负数。散度 $\operatorname{div}(p_t u_t)$ 衡量从 $x$ 处向外流出的概率质量，故前面加负号表示净流入。
 
@@ -245,14 +221,12 @@ $$\operatorname{div}(v_t)(x) = \sum_{i=1}^d \frac{\partial}{\partial x_i} v_t^i(
 ### 3.3 学习边缘向量场
 
 #### Flow Matching Loss（理想但不可行）
+$$\mathcal{L}_{\text{FM}}(\theta) = \mathbb{E}_{t \sim \text{Unif},\, x \sim p_t}\left[ \left\| u_t^\theta(x) - u_t^{\text{target}}(x) \right\|^2 \right] \tag{24} $$ ^eq-24
 
-$$\mathcal{L}_{\text{FM}}(\theta) = \mathbb{E}_{t \sim \text{Unif},\, x \sim p_t}\left[ \left\| u_t^\theta(x) - u_t^{\text{target}}(x) \right\|^2 \right] \tag{24}$$
-
-问题：$u_t^{\text{target}}(x)$ 需要通过积分 (18) 计算，**不可行**。
+问题：$u_t^{\text{target}}(x)$ 需要通过积分 [(18)](#^eq-18) 计算，**不可行**。
 
 #### Conditional Flow Matching Loss（可训练的目标）
-
-$$\mathcal{L}_{\text{CFM}}(\theta) = \mathbb{E}_{t \sim \text{Unif},\, z \sim p_{\text{data}},\, x \sim p_t(\cdot \mid z)}\left[ \left\| u_t^\theta(x) - u_t^{\text{target}}(x \mid z) \right\|^2 \right] \tag{26}$$
+$$\mathcal{L}_{\text{CFM}}(\theta) = \mathbb{E}_{t \sim \text{Unif},\, z \sim p_{\text{data}},\, x \sim p_t(\cdot \mid z)}\left[ \left\| u_t^\theta(x) - u_t^{\text{target}}(x \mid z) \right\|^2 \right] \tag{26} $$ ^eq-26
 
 #### 定理 12：CFM 与 FM 等价（仅差与 $\theta$ 无关的常数）
 
@@ -280,11 +254,23 @@ $$\mathcal{L}_{\text{FM}} = \mathcal{L}_{\text{CFM}} + C$$
 
 #### 例子 13：Gaussian 路径的 CFM Loss
 
-对 $p_t(\cdot \mid z) = \mathcal{N}(\alpha_t z, \beta_t^2 I_d)$，将 (20) 代入 (26)：
+> 想象从噪声 $\epsilon$ 到真实数据 $z$ 画一条 **直线**：
+>
+> $$x_t = t \cdot z + (1 - t) \cdot \epsilon$$
+>
+> - $t = 0$ 时：$x_0 = \epsilon$（纯噪声）
+> - $t = 1$ 时：$x_1 = z$（真实数据）
+>
+> 这条直线上每一点的**切线方向**（速度）都是：
+>
+> $$\frac{dx_t}{dt} = z - \epsilon$$
+>
+> 这是一个**常数方向**，即目标速度场。
 
-$$\mathcal{L}_{\text{CFM}}(\theta) = \mathbb{E}_{t, z, \epsilon \sim \mathcal{N}(0,I_d)}\left[ \left\| u_t^\theta(\alpha_t z + \beta_t \epsilon) - (\dot{\alpha}_t z + \dot{\beta}_t \epsilon) \right\|^2 \right] \tag{31}$$
+对 $p_t(\cdot \mid z) = \mathcal{N}(\alpha_t z, \beta_t^2 I_d)$，将 [(20)](#^eq-20) 代入 [(26)](#^eq-26)：
+$$\mathcal{L}_{\text{CFM}}(\theta) = \mathbb{E}_{t, z, \epsilon \sim \mathcal{N}(0,I_d)}\left[ \left\| u_t^\theta(\alpha_t z + \beta_t \epsilon) - (\dot{\alpha}_t z + \dot{\beta}_t \epsilon) \right\|^2 \right] \tag{31} $$ ^eq-31
 
-**推导**：把 $x = \alpha_t z + \beta_t \epsilon$ 代入条件向量场 (20)：
+**推导**：把 $x = \alpha_t z + \beta_t \epsilon$ 代入条件向量场 [(20)](#^eq-20)：
 
 $$u_t^{\text{target}}(x \mid z) = \left(\dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_t}\alpha_t\right) z + \frac{\dot{\beta}_t}{\beta_t}(\alpha_t z + \beta_t \epsilon) = \dot{\alpha}_t z + \dot{\beta}_t \epsilon$$
 
@@ -310,9 +296,8 @@ $$\nabla \log q(x)$$
 - 条件 score：$\nabla \log p_t(x \mid z)$
 - 边缘 score：$\nabla \log p_t(x)$
 
-类似 (18)，边缘 score 也可写成条件 score 的后验加权平均：
-
-$$\nabla \log p_t(x) = \int \nabla \log p_t(x \mid z) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z \tag{38}$$
+类似 [(18)](#^eq-18)，边缘 score 也可写成条件 score 的后验加权平均：
+$$\nabla \log p_t(x) = \int \nabla \log p_t(x \mid z) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z \tag{38} $$ ^eq-38
 
 **推导**：
 
@@ -325,14 +310,13 @@ $$= \int \nabla \log p_t(x \mid z) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x
 #### 例子 15：Gaussian 路径的 Score Function
 
 对 $p_t(x \mid z) = \mathcal{N}(x; \alpha_t z, \beta_t^2 I_d)$：
-
-$$\nabla \log p_t(x \mid z) = -\frac{x - \alpha_t z}{\beta_t^2} \tag{40}$$
+$$\nabla \log p_t(x \mid z) = -\frac{x - \alpha_t z}{\beta_t^2} \tag{40} $$ ^eq-40
 
 #### 命题 1：Gaussian 路径下向量场与 score 的转换
+$$u_t^{\text{target}}(x \mid z) = a_t \nabla \log p_t(x \mid z) + b_t x \tag{41} $$ ^eq-41
 
-$$u_t^{\text{target}}(x \mid z) = a_t \nabla \log p_t(x \mid z) + b_t x \tag{41}$$
 
-$$u_t^{\text{target}}(x) = a_t \nabla \log p_t(x) + b_t x \tag{42}$$
+$$u_t^{\text{target}}(x) = a_t \nabla \log p_t(x) + b_t x \tag{42} $$ ^eq-42
 
 其中：
 
@@ -340,21 +324,20 @@ $$a_t = \beta_t^2 \frac{\dot{\alpha}_t}{\alpha_t} - \dot{\beta}_t \beta_t, \quad
 
 **推导验证**：
 
-将 (40) 代入 (41) 右端：
+将 [(40)](#^eq-40) 代入 [(41)](#^eq-41) 右端：
 
 $$a_t \left(-\frac{x - \alpha_t z}{\beta_t^2}\right) + b_t x = \left(\beta_t^2 \frac{\dot{\alpha}_t}{\alpha_t} - \dot{\beta}_t \beta_t\right) \frac{\alpha_t z - x}{\beta_t^2} + \frac{\dot{\alpha}_t}{\alpha_t} x$$
 
 $$= \left(\dot{\alpha}_t - \frac{\dot{\beta}_t \alpha_t}{\beta_t}\right) z + \left(-\frac{\dot{\alpha}_t}{\alpha_t} + \frac{\dot{\beta}_t}{\beta_t} + \frac{\dot{\alpha}_t}{\alpha_t}\right) x = \left(\dot{\alpha}_t - \frac{\dot{\beta}_t}{\beta_t}\alpha_t\right) z + \frac{\dot{\beta}_t}{\beta_t} x$$
 
-这正是 (20)。对边缘版本，两边对后验积分即可。
+这正是 [(20)](#^eq-20)。对边缘版本，两边对后验积分即可。
 
 > **重大意义**：学得了向量场就等于学得了 score，反之亦然。这使得扩散模型既可以用 Flow Matching 训练，也可以用 Score Matching 训练。
 
 #### Denoiser（去噪器）
+$$D_t(x) = \int z \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z = \frac{1}{\dot{\alpha}_t \beta_t - \alpha_t \dot{\beta}_t} \left(\beta_t u_t^{\text{target}}(x) - \dot{\beta}_t x\right) \tag{43} $$ ^eq-43
 
-$$D_t(x) = \int z \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z = \frac{1}{\dot{\alpha}_t \beta_t - \alpha_t \dot{\beta}_t} \left(\beta_t u_t^{\text{target}}(x) - \dot{\beta}_t x\right) \tag{43}$$
-
-> **直观**：$D_t(x)$ 是给定含噪数据 $x$ 后，对原始干净数据 $z$ 的后验期望估计。因此模型也被称为“denoising diffusion model”。
+> **直观**：$D_t(x)$ 是给定含噪数据 $x$ 后，对原始干净数据 $z$ 的后验期望估计。因此模型也被称为“denoising diffusion model”。$$D_t(x) = \mathbb{E}[z \mid x_t = x]$$
 
 ---
 
@@ -363,8 +346,7 @@ $$D_t(x) = \int z \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} \,\mathrm{d}z 
 #### 定理 17：SDE Extension Trick
 
 对任意扩散系数 $\sigma_t \ge 0$，构造如下 SDE：
-
-$$X_0 \sim p_{\text{init}}, \quad \mathrm{d}X_t = \left[ u_t^{\text{target}}(X_t) + \frac{\sigma_t^2}{2} \nabla \log p_t(X_t) \right] \mathrm{d}t + \sigma_t \,\mathrm{d}W_t \tag{44}$$
+$$X_0 \sim p_{\text{init}}, \quad \mathrm{d}X_t = \left[ u_t^{\text{target}}(X_t) + \frac{\sigma_t^2}{2} \nabla \log p_t(X_t) \right] \mathrm{d}t + \sigma_t \,\mathrm{d}W_t \tag{44} $$ ^eq-44
 
 则仍有 $X_t \sim p_t$（$0 \le t \le 1$）。特别地，$X_1 \sim p_{\text{data}}$。
 
@@ -372,29 +354,25 @@ $$X_0 \sim p_{\text{init}}, \quad \mathrm{d}X_t = \left[ u_t^{\text{target}}(X_t
 
 #### 例子 18：Gaussian 路径的 SDE 形式
 
-利用命题 1 将 (44) 完全用 score 表示：
-
-$$\mathrm{d}X_t = \left[ \left(a_t + \frac{\sigma_t^2}{2}\right) \nabla \log p_t(X_t) + b_t X_t \right] \mathrm{d}t + \sigma_t \,\mathrm{d}W_t \tag{46}$$
+利用命题 1 将 [(44)](#^eq-44) 完全用 score 表示：
+$$\mathrm{d}X_t = \left[ \left(a_t + \frac{\sigma_t^2}{2}\right) \nabla \log p_t(X_t) + b_t X_t \right] \mathrm{d}t + \sigma_t \,\mathrm{d}W_t \tag{46} $$ ^eq-46
 
 #### 拉普拉斯算子
-
-$$\Delta w_t(x) = \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2} w_t(x) = \operatorname{div}(\nabla w_t)(x) \tag{48}$$
+$$\Delta w_t(x) = \sum_{i=1}^d \frac{\partial^2}{\partial x_i^2} w_t(x) = \operatorname{div}(\nabla w_t)(x) \tag{48} $$ ^eq-48
 
 #### 定理 19：Fokker-Planck 方程
 
 对 SDE $X_0 \sim p_{\text{init}}, \; \mathrm{d}X_t = u_t(X_t)\mathrm{d}t + \sigma_t\,\mathrm{d}W_t$，有 $X_t \sim p_t$ 当且仅当：
+$$\partial_t p_t(x) = -\operatorname{div}(p_t u_t)(x) + \frac{\sigma_t^2}{2} \Delta p_t(x) \tag{49} $$ ^eq-49
 
-$$\partial_t p_t(x) = -\operatorname{div}(p_t u_t)(x) + \frac{\sigma_t^2}{2} \Delta p_t(x) \tag{49}$$
+> **直观**：相比连续性方程 [(23)](#^eq-23)，Fokker-Planck 方程多了一个 Laplacian 项。它类似热传导方程中的扩散项，刻画了随机噪声导致的概率密度“摊开”效应。当 $\sigma_t = 0$ 时，[(49)](#^eq-49) 退化为 [(23)](#^eq-23)。
 
-> **直观**：相比连续性方程 (23)，Fokker-Planck 方程多了一个 Laplacian 项。它类似热传导方程中的扩散项，刻画了随机噪声导致的概率密度“摊开”效应。当 $\sigma_t = 0$ 时，(49) 退化为 (23)。
-
-**定理 17 的证明核心**：将 (44) 的漂移项代入 (49)，通过加减 $\frac{\sigma_t^2}{2}\Delta p_t$、利用 $\nabla \log p_t = \frac{\nabla p_t}{p_t}$ 和散度的线性性，可直接验证满足 Fokker-Planck 方程。
+**定理 17 的证明核心**：将 [(44)](#^eq-44) 的漂移项代入 [(49)](#^eq-49)，通过加减 $\frac{\sigma_t^2}{2}\Delta p_t$、利用 $\nabla \log p_t = \frac{\nabla p_t}{p_t}$ 和散度的线性性，可直接验证满足 Fokker-Planck 方程。
 
 #### Langevin Dynamics（朗之万动力学）
 
 当概率路径为常数 $p_t = p$ 时，令 $u_t^{\text{target}} = 0$，得到：
-
-$$\mathrm{d}X_t = \frac{\sigma_t^2}{2} \nabla \log p(X_t) \,\mathrm{d}t + \sigma_t \,\mathrm{d}W_t \tag{50}$$
+$$\mathrm{d}X_t = \frac{\sigma_t^2}{2} \nabla \log p(X_t) \,\mathrm{d}t + \sigma_t \,\mathrm{d}W_t \tag{50} $$ ^eq-50
 
 这是著名的 Langevin dynamics，$p$ 是其平稳分布（stationary distribution）。
 
@@ -422,7 +400,7 @@ $$\mathcal{L}_{\text{SM}}(\theta) = \mathcal{L}_{\text{CSM}}(\theta) + C \quad \
 
 #### 例子 23：Gaussian 路径的 Denoising Score Matching
 
-对 $p_t(x \mid z) = \mathcal{N}(\alpha_t z, \beta_t^2 I_d)$，有条件 score (40)，代入 CSM：
+对 $p_t(x \mid z) = \mathcal{N}(\alpha_t z, \beta_t^2 I_d)$，有条件 score [(40)](#^eq-40)，代入 CSM：
 
 $$\mathcal{L}_{\text{CSM}} = \mathbb{E}_{t,z,\epsilon}\left[ \left\| s_t^\theta(\alpha_t z + \beta_t \epsilon) + \frac{\epsilon}{\beta_t} \right\|^2 \right]$$
 
@@ -445,10 +423,9 @@ $$\mathcal{L}_{\text{DDPM}}(\theta) = \mathbb{E}_{t,z,\epsilon}\left[ \left\| \e
 ### 5.1 Vanilla Guidance
 
 将条件 $y$ 直接输入网络，训练 guided 向量场 $u_t^\theta(x \mid y)$。Guided CFM 目标：
+$$\mathcal{L}_{\text{CFM}}^{\text{guided}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\text{data}},\, t,\, x \sim p_t(\cdot \mid z)} \left[ \left\| u_t^\theta(x \mid y) - u_t^{\text{target}}(x \mid z) \right\|^2 \right] \tag{58} $$ ^eq-58
 
-$$\mathcal{L}_{\text{CFM}}^{\text{guided}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\text{data}},\, t,\, x \sim p_t(\cdot \mid z)} \left[ \left\| u_t^\theta(x \mid y) - u_t^{\text{target}}(x \mid z) \right\|^2 \right] \tag{58}$$
-
-> **问题**：仅凭 vanilla guidance，生成样本往往与 prompt 对齐度不够（见图 11）。
+> **问题**：仅凭 vanilla guidance，生成样本往往与 prompt 对齐度不够。
 
 ### 5.2 Classifier-Free Guidance (CFG)
 
@@ -457,26 +434,23 @@ $$\mathcal{L}_{\text{CFM}}^{\text{guided}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\
 对 Gaussian 路径，利用 Bayes 规则：
 
 $$p_t(x \mid y) = \frac{p_t(x) p_t(y \mid x)}{p_t(y)}$$
-
-$$\nabla \log p_t(x \mid y) = \nabla \log p_t(x) + \nabla \log p_t(y \mid x) \tag{61}$$
+$$\nabla \log p_t(x \mid y) = \nabla \log p_t(x) + \nabla \log p_t(y \mid x) \tag{61} $$ ^eq-61
 
 于是 guided 向量场可写为：
 
 $$u_t^{\text{target}}(x \mid y) = u_t^{\text{target}}(x) + a_t \nabla \log p_t(y \mid x)$$
 
 为加强对 prompt 的依赖，引入 guidance scale $w > 1$：
-
-$$\tilde{u}_t(x \mid y) = u_t^{\text{target}}(x) + w a_t \nabla \log p_t(y \mid x) \tag{62}$$
+$$\tilde{u}_t(x \mid y) = u_t^{\text{target}}(x) + w a_t \nabla \log p_t(y \mid x) \tag{62} $$ ^eq-62
 
 #### Classifier-Free Guidance 推导
 
-将 $\nabla \log p_t(y \mid x) = \nabla \log p_t(x \mid y) - \nabla \log p_t(x)$ 代入 (62)：
+将 $\nabla \log p_t(y \mid x) = \nabla \log p_t(x \mid y) - \nabla \log p_t(x)$ 代入 [(62)](#^eq-62)：
 
 $$\tilde{u}_t(x \mid y) = u_t^{\text{target}}(x) + w a_t \left(\nabla \log p_t(x \mid y) - \nabla \log p_t(x)\right)$$
 
 利用命题 1 将 score 换回向量场：
-
-$$\boxed{\tilde{u}_t(x \mid y) = (1-w) u_t^{\text{target}}(x \mid \varnothing) + w u_t^{\text{target}}(x \mid y)} \tag{65}$$
+$$\boxed{\tilde{u}_t(x \mid y) = (1-w) u_t^{\text{target}}(x \mid \varnothing) + w u_t^{\text{target}}(x \mid y)} \tag{65} $$ ^eq-65
 
 其中 $u_t^{\text{target}}(x \mid \varnothing)$ 表示无条件（unconditional）向量场。$\varnothing$ 表示“空标签”。
 
@@ -485,8 +459,7 @@ $$\boxed{\tilde{u}_t(x \mid y) = (1-w) u_t^{\text{target}}(x \mid \varnothing) +
 #### CFG 训练目标
 
 训练时以概率 $\eta$ 将标签 $y$ 替换为 $\varnothing$：
-
-$$\mathcal{L}_{\text{CFM}}^{\text{CFG}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\text{data}},\, t,\, x \sim p_t(\cdot \mid z)} \left[ \left\| u_t^\theta(x \mid y) - u_t^{\text{target}}(x \mid z) \right\|^2 \right] \tag{63}$$
+$$\mathcal{L}_{\text{CFM}}^{\text{CFG}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\text{data}},\, t,\, x \sim p_t(\cdot \mid z)} \left[ \left\| u_t^\theta(x \mid y) - u_t^{\text{target}}(x \mid z) \right\|^2 \right] \tag{63} $$ ^eq-63
 
 其中 $y$ 以概率 $\eta$ 被替换为 $\varnothing$。
 
@@ -505,12 +478,10 @@ $$\mathcal{L}_{\text{CFM}}^{\text{CFG}}(\theta) = \mathbb{E}_{(z,y) \sim p_{\tex
 **Time Embedding（Fourier 特征）**
 
 直接将标量 $t$ 拼接到输入往往不足以捕捉高频的时间依赖。标准的做法是利用 Fourier 特征将 $t$ 映射到 $d$ 维空间：
-
-$$\text{TimeEmb}(t) = \sqrt{\frac{2}{d}} \left[ \cos(2\pi w_1 t),\; \dots,\; \cos(2\pi w_{d/2} t),\; \sin(2\pi w_1 t),\; \dots,\; \sin(2\pi w_{d/2} t) \right]^T \tag{68}$$
+$$\text{TimeEmb}(t) = \sqrt{\frac{2}{d}} \left[ \cos(2\pi w_1 t),\; \dots,\; \cos(2\pi w_{d/2} t),\; \sin(2\pi w_1 t),\; \dots,\; \sin(2\pi w_{d/2} t) \right]^T \tag{68} $$ ^eq-68
 
 其中频率按几何级数选取：
-
-$$w_i = w_{\min} \left(\frac{w_{\max}}{w_{\min}}\right)^{\frac{i-1}{d/2 - 1}}, \quad i = 1, \dots, d/2 \tag{69}$$
+$$w_i = w_{\min} \left(\frac{w_{\max}}{w_{\min}}\right)^{\frac{i-1}{d/2 - 1}}, \quad i = 1, \dots, d/2 \tag{69} $$ ^eq-69
 
 **推导与直观**：
 - 由于 $\sin^2 + \cos^2 = 1$，可直接验证 $\|\text{TimeEmb}(t)\| = 1$（归一化嵌入）。
@@ -547,8 +518,7 @@ Transformer 层的输入包括：
 - 条件嵌入：$\tilde{y} = \text{PromptEmb}(y) \in \mathbb{R}^{S \times d}$
 
 然后通过 $L$ 层 DiTBlock 迭代更新：
-
-$$\tilde{x}_{i+1} = \text{DiTBlock}(\tilde{x}_i, \tilde{t}, \tilde{y}) \in \mathbb{R}^{N \times d}, \quad i = 0, \dots, L-1 \tag{70}$$
+$$\tilde{x}_{i+1} = \text{DiTBlock}(\tilde{x}_i, \tilde{t}, \tilde{y}) \in \mathbb{R}^{N \times d}, \quad i = 0, \dots, L-1 \tag{70} $$ ^eq-70
 
 最后将输出通过线性层再 depatchify，得到与输入同形状的速度场：
 
@@ -623,14 +593,12 @@ $$\mathcal{L}_{\text{Recon}}(\phi, \theta) = \mathbb{E}_{x \sim p_{\text{data}}}
 #### 6.2.2 变分自编码器（VAE）
 
 VAE 将 encoder 和 decoder 从确定性函数放松为概率分布：
-
-$$q_\phi(z \mid x) = \mathcal{N}\left(z; \mu_\phi(x), \text{diag}(\sigma_\phi^2(x))\right), \quad p_\theta(x \mid z) = \mathcal{N}\left(x; \mu_\theta(z), \sigma_\theta^2(z) I_d\right) \tag{71}$$
+$$q_\phi(z \mid x) = \mathcal{N}\left(z; \mu_\phi(x), \text{diag}(\sigma_\phi^2(x))\right), \quad p_\theta(x \mid z) = \mathcal{N}\left(x; \mu_\theta(z), \sigma_\theta^2(z) I_d\right) \tag{71} $$ ^eq-71
 
 **VAE 重构损失**
 
 自然的重构目标是负对数似然：
-
-$$\mathcal{L}_{\text{VAE-Recon}}(\phi, \theta) = -\mathbb{E}_{x \sim p_{\text{data}},\, z \sim q_\phi(\cdot \mid x)} \left[ \log p_\theta(x \mid z) \right] \tag{72}$$
+$$\mathcal{L}_{\text{VAE-Recon}}(\phi, \theta) = -\mathbb{E}_{x \sim p_{\text{data}},\, z \sim q_\phi(\cdot \mid x)} \left[ \log p_\theta(x \mid z) \right] \tag{72} $$ ^eq-72
 
 **从高斯密度推导 MSE 形式**：
 
@@ -639,66 +607,57 @@ $$\mathcal{L}_{\text{VAE-Recon}}(\phi, \theta) = -\mathbb{E}_{x \sim p_{\text{da
 $$\log p_\theta(x \mid z) = -\frac{d}{2}\log(2\pi) - \frac{d}{2}\log\sigma_\theta^2(z) - \frac{1}{2\sigma_\theta^2(z)}\|x - \mu_\theta(z)\|^2$$
 
 去掉与参数无关的常数项，得到：
-
-$$\mathcal{L}_{\text{VAE-Recon}} = \mathbb{E}_{x,z}\left[ \frac{1}{2\sigma_\theta^2(z)}\|x - \mu_\theta(z)\|^2 + \frac{d}{2}\log\sigma_\theta^2(z) \right] + \text{const} \tag{73}$$
+$$\mathcal{L}_{\text{VAE-Recon}} = \mathbb{E}_{x,z}\left[ \frac{1}{2\sigma_\theta^2(z)}\|x - \mu_\theta(z)\|^2 + \frac{d}{2}\log\sigma_\theta^2(z) \right] + \text{const} \tag{73} $$ ^eq-73
 
 实践中，为避免学习方差带来的数值不稳定，常固定 $\sigma_\theta^2(z) = \tilde{\sigma}^2$（常数），于是：
-
-$$\mathcal{L}_{\text{VAE-Recon}} = \mathbb{E}_{x,z}\left[ \frac{1}{2\tilde{\sigma}^2}\|x - \mu_\theta(z)\|^2 \right] + \text{const} \tag{74}$$
+$$\mathcal{L}_{\text{VAE-Recon}} = \mathbb{E}_{x,z}\left[ \frac{1}{2\tilde{\sigma}^2}\|x - \mu_\theta(z)\|^2 \right] + \text{const} \tag{74} $$ ^eq-74
 
 这与标准自编码器的 MSE 损失等价，区别在于 $z$ 是从 encoder 分布中采样的。
 
 **先验正则项（KL 散度）**
 
 为了让隐分布接近容易采样的标准高斯，引入先验 $p_{\text{prior}} = \mathcal{N}(0, I_k)$，并用 KL 散度约束 encoder：
-
-$$\mathcal{L}_{\text{VAE-Prior}}(\phi) = \mathbb{E}_{x \sim p_{\text{data}}} \left[ D_{\text{KL}}\big(q_\phi(\cdot \mid x) \;\|\; p_{\text{prior}}\big) \right] \tag{75}$$
+$$\mathcal{L}_{\text{VAE-Prior}}(\phi) = \mathbb{E}_{x \sim p_{\text{data}}} \left[ D_{\text{KL}}\big(q_\phi(\cdot \mid x) \;\|\; p_{\text{prior}}\big) \right] \tag{75} $$ ^eq-75
 
 **KL 散度的定义与性质**：对两个概率密度 $q, p$，
 
 $$D_{\text{KL}}(q \parallel p) = \int q(x) \log\frac{q(x)}{p(x)}\,\mathrm{d}x = \mathbb{E}_{X \sim q}\left[ \log\frac{q(X)}{p(X)} \right]$$
 
 它满足：
-
-$$D_{\text{KL}}(q \parallel p) \ge 0, \quad D_{\text{KL}}(q \parallel p) = 0 \;\Leftrightarrow\; q = p \tag{76-77}$$
+$$D_{\text{KL}}(q \parallel p) \ge 0, \quad D_{\text{KL}}(q \parallel p) = 0 \;\Leftrightarrow\; q = p \tag{76-77} $$ ^eq-76-77
 
 **例子 31：对角高斯间的 KL 散度**
 
 设 $q = \mathcal{N}(\mu_q, \text{diag}(\sigma_q^2))$，$p = \mathcal{N}(\mu_p, \text{diag}(\sigma_p^2))$，则
-
-$$D_{\text{KL}}(q \parallel p) = \frac{1}{2}\left( \mathcal{K}\left(\frac{\sigma_q^2}{\sigma_p^2}\right) + \frac{\|\mu_q - \mu_p\|^2}{\sigma_p^2} \right), \quad \mathcal{K}(\alpha) = \sum_{i=1}^d \left(\alpha_i - \log\alpha_i - 1\right) \tag{80}$$
+$$D_{\text{KL}}(q \parallel p) = \frac{1}{2}\left( \mathcal{K}\left(\frac{\sigma_q^2}{\sigma_p^2}\right) + \frac{\|\mu_q - \mu_p\|^2}{\sigma_p^2} \right), \quad \mathcal{K}(\alpha) = \sum_{i=1}^d \left(\alpha_i - \log\alpha_i - 1\right) \tag{80} $$ ^eq-80
 
 **推导**（以一维为例，多维求和即可）：
 
 $$D_{\text{KL}}(q \parallel p) = \mathbb{E}_{x \sim q}\big[\log q(x) - \log p(x)\big]$$
 
 代入高斯密度并展开：
+$$= \frac{1}{2}\log\frac{\sigma_p^2}{\sigma_q^2} + \frac{1}{2\sigma_p^2}\mathbb{E}_q\left[\|x - \mu_p\|^2\right] - \frac{1}{2\sigma_q^2}\mathbb{E}_q\left[\|x - \mu_q\|^2\right] \tag{81} $$ ^eq-81
 
-$$= \frac{1}{2}\log\frac{\sigma_p^2}{\sigma_q^2} + \frac{1}{2\sigma_p^2}\mathbb{E}_q\left[\|x - \mu_p\|^2\right] - \frac{1}{2\sigma_q^2}\mathbb{E}_q\left[\|x - \mu_q\|^2\right] \tag{81}$$
-
-利用 $\mathbb{E}_q[\|x - \mu_q\|^2] = \sigma_q^2$ 以及 $\mathbb{E}_q[\|x - \mu_p\|^2] = \sigma_q^2 + \|\mu_q - \mu_p\|^2$，回代后整理即得 (80)。
+利用 $\mathbb{E}_q[\|x - \mu_q\|^2] = \sigma_q^2$ 以及 $\mathbb{E}_q[\|x - \mu_p\|^2] = \sigma_q^2 + \|\mu_q - \mu_p\|^2$，回代后整理即得 [(80)](#^eq-80)。
 
 **VAE 的 KL 项具体形式**
 
 当 $p_{\text{prior}} = \mathcal{N}(0, I_k)$ 时，$\mu_p = 0$，$\sigma_p^2 = 1$，于是：
-
-$$D_{\text{KL}}\big(q_\phi(\cdot \mid x) \parallel \mathcal{N}(0, I_k)\big) = \frac{1}{2}\sum_{j=1}^k \left( \mu_{\phi,j}^2(x) + \sigma_{\phi,j}^2(x) - \log\sigma_{\phi,j}^2(x) - 1 \right) \tag{82}$$
+$$D_{\text{KL}}\big(q_\phi(\cdot \mid x) \parallel \mathcal{N}(0, I_k)\big) = \frac{1}{2}\sum_{j=1}^k \left( \mu_{\phi,j}^2(x) + \sigma_{\phi,j}^2(x) - \log\sigma_{\phi,j}^2(x) - 1 \right) \tag{82} $$ ^eq-82
 
 > **直观**：第一项 $\|\mu_\phi(x)\|^2$ 将隐变量均值拉向 0；第二三项 $\sum(\sigma^2 - \log\sigma^2 - 1)$ 在 $\sigma^2 = 1$ 处取最小值 0，鼓励方差为 1。
 
 **完整的 VAE 训练目标**
 
 将重构项与先验项加权（$\beta \ge 0$ 控制 trade-off）：
-
-$$\mathcal{L}_{\text{VAE}}(\phi, \theta) = \mathcal{L}_{\text{VAE-Recon}}(\phi, \theta) + \beta \, \mathcal{L}_{\text{VAE-Prior}}(\phi) \tag{78}$$
+$$\mathcal{L}_{\text{VAE}}(\phi, \theta) = \mathcal{L}_{\text{VAE-Recon}}(\phi, \theta) + \beta \, \mathcal{L}_{\text{VAE-Prior}}(\phi) \tag{78} $$ ^eq-78
 
 代入具体形式：
-
-$$\mathcal{L}_{\text{VAE}} = \mathbb{E}_{x, z \sim q_\phi}\left[ \underbrace{\frac{1}{2\sigma_\theta^2(z)}\|x - \mu_\theta(z)\|^2}_{\text{重构误差}} + \underbrace{\frac{d}{2}\log\sigma_\theta^2(z)}_{\text{decoder 置信度}} + \underbrace{\frac{\beta}{2}\mathcal{K}(\sigma_\phi^2(x))}_{\text{方差约束}} + \underbrace{\frac{\beta}{2}\|\mu_\phi(x)\|^2}_{\text{均值约束}} \right] + \text{const} \tag{83}$$
+$$\mathcal{L}_{\text{VAE}} = \mathbb{E}_{x, z \sim q_\phi}\left[ \underbrace{\frac{1}{2\sigma_\theta^2(z)}\|x - \mu_\theta(z)\|^2}_{\text{重构误差}} + \underbrace{\frac{d}{2}\log\sigma_\theta^2(z)}_{\text{decoder 置信度}} + \underbrace{\frac{\beta}{2}\mathcal{K}(\sigma_\phi^2(x))}_{\text{方差约束}} + \underbrace{\frac{\beta}{2}\|\mu_\phi(x)\|^2}_{\text{均值约束}} \right] + \text{const} \tag{83} $$ ^eq-83
 
 **重参数化技巧（Reparameterization Trick）**
 
-损失 (83) 需要对 $z \sim q_\phi(z \mid x)$ 求期望，而 $q_\phi$ 的分布本身依赖于参数 $\phi$，直接用梯度下降会有困难。重参数化技巧将随机性从参数中分离出来：
+损失 [(83)](#^eq-83) 需要对 $z \sim q_\phi(z \mid x)$ 求期望，而 $q_\phi$ 的分布本身依赖于参数 $\phi$，直接用梯度下降会有困难。重参数化技巧将随机性从参数中分离出来：
 
 $$\epsilon \sim \mathcal{N}(0, I_k), \quad z = \mu_\phi(x) + \sigma_\phi(x) \odot \epsilon \quad \Rightarrow \quad z \sim q_\phi(\cdot \mid x)$$
 
@@ -741,8 +700,7 @@ $$\epsilon \sim \mathcal{N}(0, I_k), \quad z = \mu_\phi(x) + \sigma_\phi(x) \odo
 - $Q_t(x \mid x) = -\sum_{y \neq x} Q_t(y \mid x)$
 
 小步长近似转移概率：
-
-$$p_{t+h \mid t}(y \mid x) \approx 1_{y=x} + h Q_t(y \mid x) =: \tilde{p}_{t+h \mid t}(y \mid x) \tag{88}$$
+$$p_{t+h \mid t}(y \mid x) \approx 1_{y=x} + h Q_t(y \mid x) =: \tilde{p}_{t+h \mid t}(y \mid x) \tag{88} $$ ^eq-88
 
 #### Factorized CTMC
 
@@ -777,8 +735,7 @@ $$\frac{\mathrm{d}}{\mathrm{d}t} p_t(x) = \sum_{y \in S} Q_t(x \mid y) p_t(y)$$
 #### 定理 36：离散 Marginalization Trick
 
 边缘 rate matrix：
-
-$$Q_t(y \mid x) = \sum_{z \in S} Q_t^z(y \mid x) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} = \sum_{z \in S} Q_t^z(y \mid x) p_{1 \mid t}(z \mid x) \tag{90}$$
+$$Q_t(y \mid x) = \sum_{z \in S} Q_t^z(y \mid x) \frac{p_t(x \mid z) p_{\text{data}}(z)}{p_t(x)} = \sum_{z \in S} Q_t^z(y \mid x) p_{1 \mid t}(z \mid x) \tag{90} $$ ^eq-90
 
 满足 $X_0 \sim p_{\text{init}}, \; X_t \text{ CTMC of } Q_t \Rightarrow X_t \sim p_t$，特别地 $X_1 \sim p_{\text{data}}$。
 
@@ -789,8 +746,7 @@ $$Q_t^z(v_i, j \mid x_j) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left( \delta_{z_
 > 简单理解：若位置 $j$ 的当前值 $x_j \neq z_j$，则它只能“跳”到目标值 $z_j$，速率为 $\frac{\dot{\kappa}_t}{1-\kappa_t}$；若已在 $z_j$，则不再跳转。
 
 #### 定理 38：Factorized Mixture Path 的边缘 Rate Matrix
-
-$$Q_t(v_i, j \mid x) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left( p_{1 \mid t}(z_j = v_i \mid x) - \delta_{x_j}(v_i) \right) \tag{95}$$
+$$Q_t(v_i, j \mid x) = \frac{\dot{\kappa}_t}{1 - \kappa_t} \left( p_{1 \mid t}(z_j = v_i \mid x) - \delta_{x_j}(v_i) \right) \tag{95} $$ ^eq-95
 
 > **关键洞察**：边缘 rate matrix 完全由后验概率 $p_{1 \mid t}(z_j = v_i \mid x)$ 决定。这意味着训练 CTMC 生成模型等价于训练一个**逐位置的分类器**！
 
